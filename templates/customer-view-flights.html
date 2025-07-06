@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        table, th, td {
+            border: 0.5px solid black;
+        }
+    </style>
+</head>
+<body>
+    <a href="/customerHome">Back</a><br>
+    <h2>Upcoming Flights</h2>
+    <p>Dear customer, you can only cancel flights that are beyond 24 hours of your cancellation request.</p>
+    {% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+    <table>
+        <tr>
+            <th>First name</th>
+            <th>Ticket ID</th>
+            <th>Airline Name</th>
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Arrival Airport</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Cancel Flight</th>
+        </tr>
+        {% for flight in upcoming_flights %}
+        <tr>
+            <td>{{ flight.first_name }}</td>
+            <td>{{ flight.ticketID }}</td>
+            <td>{{ flight.airline_name }}</td>
+            <td>{{ flight.flight_num }}</td>
+            <td>{{ flight.departure_airport }}</td>
+            <td>{{ flight.arrival_airport }}</td>
+            <td>{{ flight.departure_date }}</td>
+            <td>{{ flight.departure_time }}</td>
+            <td>
+                {% if flight.can_cancel %}
+                <form action="{{ url_for('customer_cancel_flight') }}" method="post">
+                    <input type="hidden" name="cancel_ticket_id" value="{{ flight.ticketID }}">
+                    <input type="submit" value="Cancel Flight">
+                </form>
+                {% else %}
+                <button disabled>Cancel Flight</button>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Previous Flights</h2>
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Ticket ID</th>
+            <th>Airline Name</th>
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Arrival Airport</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+        </tr>
+        {% for flight in previous_flights %}
+        <tr>
+            <td>{{ flight.first_name }}</td>
+            <td>{{ flight.ticketID }}</td>
+            <td>{{ flight.airline_name }}</td>
+            <td>{{ flight.flight_num }}</td>
+            <td>{{ flight.departure_airport }}</td>
+            <td>{{ flight.arrival_airport }}</td>
+            <td>{{ flight.departure_date }}</td>
+            <td>{{ flight.departure_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

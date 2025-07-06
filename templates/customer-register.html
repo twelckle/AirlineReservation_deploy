@@ -1,0 +1,63 @@
+<html>
+<head>
+	<script>
+		// Function to add another phone number if the customer decides to - shows an additional input field
+		function addPhoneField(){
+		var container = document.getElementById("phoneContainer");
+	    var newPhoneInput = document.createElement("input");
+	    newPhoneInput.type = "text";
+	    newPhoneInput.name = "customer_phone[]"; // Use an array to handle multiple phone number inputs
+	    newPhoneInput.placeholder = "countrycode,phone";
+
+	    var lineBreak = document.createElement("br");
+
+	    container.appendChild(newPhoneInput);
+	    container.appendChild(lineBreak);
+	 }
+	</script>
+</head>
+<body>
+
+	<a href="/">Go back</a>
+	<br>
+
+	<h1>Customer - Register</h1>
+		
+	<form action="/registerAuth" method="POST">
+		<p>Login Details</p>
+		<input type="email" name = "emailid" placeholder="email" required/> </br>
+		<input type="password" name = "password" placeholder="password" maxlength="20" required/></br>
+		<p>Personal Details</p>
+		<input type="text" name = "fname" placeholder="first name" required/></br>
+		<input type="text" name = "lname" placeholder="last name" required/></br>
+		<label>Date of Birth: </label><input type="date" name = "date-of-birth" placeholder="date-of-birth" required/>
+		<!-- Contact list -->
+		<p>Contact</p>
+		<div id="phoneContainer">
+			<input type='text' name = "customer_phone[]" placeholder="countrycode,phone" maxlength="15" required> </br>
+		</div>
+		<button type="button" onclick='addPhoneField()'>Add Phone Number</button> </br>
+		<!-- List field ends -->
+		<p>Address</p>
+		<input type="number" name = "building-num" placeholder="building number" required maxlength="10"/></br>
+		<input type="text" name = "street-name" placeholder="street name" required/></br>
+		<input type="number" name = "apt-num" placeholder="apartment number" maxlength="10"/></br>
+		<input type="text" name = "city" placeholder="city" required/>
+		<input type="text" name = "state" placeholder="state" required/>
+		<input type="text" name = "zip-code" placeholder="zip code" required maxlength="20"/></br>
+		<p>Passport Details</p>
+		<input type="text" name = "passport-number" placeholder="passport number" required/><br/>
+		<input type="text" name = "passport-country" placeholder="passport country" required/><br/>
+		<label>Expiry date: </label><input type="date" name = "passport-expiry" placeholder="passport expiry date" required/><br/>
+
+		
+		<br>
+		<input type="submit" value = Register />
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+	</form>
+
+	<a href="/customer-login">Already have an account? Log in</a>
+</body>
+</html>

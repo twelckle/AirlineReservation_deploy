@@ -1,0 +1,21 @@
+<html>
+<head>
+</head>
+<body>
+	<a href="staff_home">Go back</a> </br>
+	<form action="/createNewAirplane" method="POST">
+		<h1>Create New Airplane </h1>
+		<input type="text" name = "airplaneID" placeholder="airplaneID" required/> </br>
+		Number of Seats: <input type="number" min=0 max=1000 step=1 name = "num_of_seats" required/> </br>
+		<input type="text" name = "manufacturing_company" placeholder="manufacturing company" required/> </br>
+		Manufacturing Date: <input type="date" name = "manufacturing_date" placeholder="manufacturing date" required/> </br>
+		<input type="text" name = "model_num" placeholder="model number" required/> </br>
+		<input type="Submit" value = "Create New Airplane"/> </br>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+	</form>
+</body>
+
+
+</html>

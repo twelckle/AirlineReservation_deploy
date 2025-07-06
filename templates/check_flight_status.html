@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        table, th, td{
+            border: 1px solid black;
+        }
+    </style>
+
+    <a href="/">Go back</a> </br>
+    <form action="/checkFlightStatus" method="POST">
+        <h1>View Flight Status</h1>
+
+        <input type="text" name = "airline_name" placeholder="Airline Name" required/> </br>
+        <input type="text" name = "flight_num" placeholder="Flight Number" required/> </br>
+        Departure Date: <input type="date" name = "departure" placeholder="Departure Date" required/> </br>
+        Arrival Date: <input type="date" name = "arrival" placeholder="Arrival Date" required/> </br>
+        <input type="Submit" value = "Search for Status"/> </br>
+
+
+        {% if error %}
+            <p class="error"><strong>Error:</strong> {{error}}</p>
+        {% endif %}
+
+    </form>
+
+    <hr>
+    <table>
+        <th>Airline Name</th>
+        <th>Departure Aiport</th>
+        <th>Arrival Airport</th>
+        <th>Flight Number</th>
+        <th>Departure Date</th>
+        <th>Departure Time</th>
+        <th>Arrival Date</th>
+        <th>Arrival Time</th>
+        <th>Base Price Ticket</th>
+        <th>Flight Status</th>
+        {% for flight in flights %}
+        <tr>
+            <td>{{flight['airline_name']}}</td>
+            <td>{{flight['departure_airport']}}</td>
+            <td>{{flight['arrival_airport']}}</td>
+            <td>{{flight['flight_num']}}</td>
+            <td>{{flight['departure_date']}}</td>
+            <td>{{flight['departure_time']}}</td>
+            <td>{{flight['arrival_date']}}</td>
+            <td>{{flight['arrival_time']}}</td>
+            <td>{{flight['base_price_ticket']}}</td>
+            <td><b>{{flight['flight_status']}}</b></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

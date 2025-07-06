@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style type="text/css">
+        table, th, td {
+            border: 0.5px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/customerHome">Back to Customer Home</a><br>
+	<h1>Purchase Gateway</h1>
+    <p>Please confirm your selection and enter your payment details</p>
+    <!-- <p>Selected Outbound: {{ selected_outbound }}</p> -->
+    <!-- <p>Selected Inbound: {{ selected_inbound }}</p> -->
+    <p><strong>Flight details</strong></p>
+    <table>
+        <tr>
+            <th> </th>
+            <th>Airline</th>
+            <th>Flight Number</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Arrival Date</th>
+            <th>Arrival Time</th>
+            <!-- <th>Price</th> -->
+            <th>Price</th>
+
+        </tr>
+        {% for flight in details_selected_outbound %}
+        <tr>
+            <td>Outbound</td>
+            <td>{{ flight['airline_name'] }}</td>
+            <td>{{ flight['flight_num'] }}</td>
+            <td>{{ flight['departure_airport'] }}</td>
+            <td>{{ flight['arrival_airport'] }}</td>
+            <td>{{ flight['departure_date'] }}</td>
+            <td>{{ flight['departure_time'] }}</td>
+            <td>{{ flight['arrival_date'] }}</td>
+            <td>{{ flight['arrival_time'] }}</td>
+            <!-- <td>{{ flight['base_price_ticket'] }}</td> -->
+            <td>{{ flight['dynamic_price'] }}</td>
+        </tr>
+        {% endfor %}
+
+        {% if details_selected_inbound %}
+        {% for flight in details_selected_inbound %}
+        <tr>
+            <td>Inbound/Return</td>
+            <td>{{ flight['airline_name'] }}</td>
+            <td>{{ flight['flight_num'] }}</td>
+            <td>{{ flight['departure_airport'] }}</td>
+            <td>{{ flight['arrival_airport'] }}</td>
+            <td>{{ flight['departure_date'] }}</td>
+            <td>{{ flight['departure_time'] }}</td>
+            <td>{{ flight['arrival_date'] }}</td>
+            <td>{{ flight['arrival_time'] }}</td>
+            <!-- <td>{{ flight['base_price_ticket'] }}</td> -->
+            <td>{{ flight['dynamic_price'] }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+    <p>
+        If you have verified the flight details previewed above, and please continue with the next steps. <br>
+        If this ticket is for yourself, details will be used from your account. If you're buying this for someone else, please check the box to provide their details.
+    </p>
+
+    <form action="/customer-purchase-confirmation" method="post">
+        <!-- <input type="hidden" name="selected_outbound" value="{{ selected_outbound }}"> -->
+        <!-- <input type="hidden" name="selected_inbound" value="{{ selected_inbound }}"> -->
+
+        <input type="checkbox" id="buyingForOthers" name="buying_for_others" value="yes">
+        <label for="buyingForOthers">I am buying this for someone else</label>
+      
+        <div id="additionalDetails" style="display:none;">
+            <p><strong>Passenger details</strong></p>
+            <input type="text" name="passenger_fname" placeholder="First Name">
+            <input type="text" name="passenger_lname" placeholder="Last Name">
+            <!-- <input type="text" name="passenger_email" placeholder="Email"> -->
+            <label for="passenger_dob">Date of Birth: </label>
+            <input type="date" name="passenger_dob" placeholder="10-10-2023">
+        </div>
+
+        <!-- Add any additional hidden inputs for flight details if necessary -->
+        <p><strong>Card details</strong></p>
+        <label for="card_type">Card Type:</label>
+        <select id="card_type" name="card_type" required>
+            <option value="credit">credit</option>
+            <option value="debit">debit</option>
+        </select><br>
+
+        <label for="card_number">Card Number:</label>
+        <input type="text" id="card_number" name="card_number" required><br>
+
+        <label for="name_on_card">Name on Card:</label>
+        <input type="text" id="name_on_card" name="name_on_card" required><br>
+
+        <label for="expiration_date">Expiration Date:</label>
+        <input type="date" id="expiration_date" name="expiration_date" required><br>
+
+        <br>
+        <span>Grand Total = ${{ total_cost if total_cost else 'Session issue, logout and log back in: go to /customer-login' }}</span><br><br>
+        <input type="checkbox" id="UnderstandTerms" value="UnderstandTerms" required> <label for="UnderstandTerms">I understand that this action cannot be undone once I click "Confirm Purchase".</label><br><br>
+        
+        <input type="submit" value="Confirm Purchase">
+    </form>
+    {% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+        <a href="/customer-login">Login again</a>
+	{% endif %}
+
+    <script>
+        document.getElementById('buyingForOthers').onchange = function() {
+        document.getElementById('additionalDetails').style.display = this.checked ? 'block' : 'none';
+        };
+    </script>
+</body>
+
+</html>

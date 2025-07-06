@@ -1,0 +1,55 @@
+<html>
+<head>
+</head>
+<body>
+
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
+
+	<a href="staff_home">Go back</a> </br>
+	<h2>Change Status </h2>
+	<table>
+		<th>Airline Name</th>
+		<th>Departure Aiport</th>
+		<th>Arrival Airport</th>
+		<th>Flight Number</th>
+		<th>Departure Date</th>
+		<th>Departure Time</th>
+		<th>Arrival Date</th>
+		<th>Arrival Time</th>
+		<th>Base Price Ticket</th>
+		<th>Flight Status</th>
+		<tr>
+			<td>{{flight['airline_name']}}</td>
+			<td>{{flight['departure_airport']}}</td>
+			<td>{{flight['arrival_airport']}}</td>
+			<td>{{flight['flight_num']}}</td>
+			<td>{{flight['departure_date']}}</td>
+			<td>{{flight['departure_time']}}</td>
+			<td>{{flight['arrival_date']}}</td>
+			<td>{{flight['arrival_time']}}</td>
+			<td>{{flight['base_price_ticket']}}</td>
+			<td>{{flight['flight_status']}}</td>
+		</tr>
+	</table>
+
+	<form action='/changeStatus' method = "POST">
+		<div id='statusChange'>
+			<input type="radio" name="status" value="delayed"/> Delayed
+			<input type="radio" name="status" value="on_time"/> On Time
+			<input type="radio" name="status" value="canceled"/> Canceled </br>
+			<input type="hidden" name="flight_num" value="{{flight['flight_num']}}"/>
+			<input type="hidden" name="airline_name" value="{{flight['airline_name']}}"/>
+			<input type="hidden" name="departure_date" value="{{flight['departure_date']}}"/>
+			<input type="hidden" name="departure_time" value="{{flight['departure_time']}}"/>
+			<input type="submit" value = "Submit"/>
+		<div>
+	</form>
+</body>
+</body>
+
+
+</html>

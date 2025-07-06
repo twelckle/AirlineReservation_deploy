@@ -1,0 +1,30 @@
+<html>
+<head>
+</head>
+<body>
+
+	<a href="staff_home">Go back</a> </br>
+	<form action="/createNewAirport" method="POST">
+		<h1>Create New Airport </h1>
+		<input type="text" name = "code" placeholder="Airport Code" required/> </br>
+		<input type="text" name = "airport_name" placeholder="Airport Name" required/> </br>
+		<input type="text" name = "city" placeholder="City" required/> </br>
+		<input type="text" name = "country" placeholder="Country" required/> </br>
+		Number of Terminals: <input type="number" min=0 max=20 step=1 name = "terminals" required/> </br>
+		<input type="radio" name="airport_type" value="international" required/> International
+		<input type="radio" name="airport_type" value="domestic" required/> Domestic
+		<input type="radio" name="airport_type" value="both" required/> Both </br>
+		<input type="Submit" value = "Create New Airport"/>
+
+		{% if success %}
+			<p class="error"><strong>Success:</strong> {{success}}</p>
+		{% endif %}
+
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+	</form>
+</body>
+
+
+</html>

@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body>
+	<a href="staff_home">Go back</a> </br>
+	<form action="/createNewFlight" method="POST">
+		<h1>Create New Flight </h1>
+		<input type="text" name = "departure_airport" placeholder="departure airport" required/> </br>
+		<input type="text" name = "arrival_airport" placeholder="arrival airport" required/> </br>
+		<input type="text" name = "assigned_airplane_airline" placeholder="assigned airplane airline" required/> </br>
+		<input type="text" name = "assigned_airplaneID" placeholder="assigned airplaneID" required/> </br>
+		<input type="text" name = "flight_num" placeholder="flight num" required/> </br>
+		Departure Date:<input type="date" name = "departure_date" placeholder="departure date" required/> </br>
+		Departure Time: <input type="time" name = "departure_time" placeholder="departure_time" required/> </br>
+		Arrival Date:<input type="date" name = "arrival_date" placeholder="arrival_date" required/> </br>
+		Arrival Time:<input type="time" name = "arrival_time" placeholder="arrival_time" required/> </br>
+		Base Price: <input type="number" min=0 max=1000000 step=0.01 name = "base_price_ticket" required/> </br>
+		<input type="radio" name="status" value="delayed" required/> Delayed
+		<input type="radio" name="status" value="canceled" required/> Canceled
+		<input type="radio" name="status" value="on_time" required/> On_Time </br>
+		<input type="Submit" value = "Create New Flight"/>
+
+
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+	</form>
+</body>
+
+
+</html>

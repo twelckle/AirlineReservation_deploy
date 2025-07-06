@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style type="text/css">
+        table, th, td {
+            border: 0.5px solid black;
+        }
+    </style>
+</head>
+
+<body>
+	<a href="/customerHome">Back</a>
+
+	<h2>Spending History</h2>
+        <table>
+            <tr>
+                <th>Ticket ID</th>
+                <th>Amount Paid</th>
+                <th>Purchase Date</th>
+                <th>Purchase Time</th>
+				<th> -> </th>
+				<th>Airline</th>
+                <th>Flight Number</th>
+                <th>Departure Date</th>
+                <th>Departure Time</th>
+
+            </tr>
+            {% for purchase in spending_history_data %}
+            <tr>
+                <td>{{ purchase['ticketID'] }}</td>
+                <td>{{ purchase['amount_paid'] }}</td>
+                <td>{{ purchase['purchase_date'] }}</td>
+                <td>{{ purchase['purchase_time'] }}</td>
+				<td></td>
+                <td>{{ purchase['airline_name'] }}</td>
+                <td>{{ purchase['flight_num'] }}</td>
+                <td>{{ purchase['departure_date'] }}</td>
+                <td>{{ purchase['departure_time'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+			<br>
+			<p>
+				Total Amount Spent: ${{ total_spent_amount }}
+			</p>
+			
+</body>
+
+</html>

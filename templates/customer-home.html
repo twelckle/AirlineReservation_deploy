@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript">
+        function toggleReturnDate() {
+            // Check if the round-trip radio button is checked
+            if (document.getElementById('round-trip').checked) {
+                // If round-trip is selected, show the return date field
+                document.getElementById('return-date-field').style.display = 'block';
+            } else {
+                // If one-way is selected, hide the return date field
+                document.getElementById('return-date-field').style.display = 'none';
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <a href="customer-logout">Logout</a>
+    <br>
+    <h1>Welcome, {{fname}}</h1>
+
+    <form action="/searchresults" method="POST">
+        <h3>Search for Flights</h3>
+        <input type="text" name="origin" placeholder="Origin Airport Code" required /> </br>
+        <input type="text" name="destination" placeholder="Destination Airport Code" required /> </br>
+        <input type="date" name="departure_date" placeholder="Departure Date" required /> </br>
+
+        <input type="radio" id="one-way" name="trip" value="one-way" onclick="toggleReturnDate()" checked>
+        <label for="one-way">One-way</label><br>
+        <input type="radio" id="round-trip" name="trip" value="round-trip" onclick="toggleReturnDate()">
+        <label for="round-trip">Round Trip</label><br>
+
+        <div id="return-date-field" style="display:none;">
+            <input type="date" name="return_date" placeholder="Return Date" /> <br/>
+        </div> 
+
+        <input type="submit" value="Search" />
+    </form>
+    <br>
+
+    <h3>Menu</h3>
+    <a href="/customer-view-flights">My Flights (Previous/Upcoming)</a><br>
+    <!-- <ul>
+        <li><a href="/customer-flights">Previous Flights</a></li>
+        <li><a href="/customer-flights">Upcoming Flights</a></li>
+    </ul> -->
+    <a href="/search">Search/Purchase Flights</a><br>
+    <a href="/customer-rate-flight">Rate a previous flight</a><br>
+    <a href="/customer-spending">Track Spending History</a><br>
+    <a href="/customer-all-purchases">View my Spending: Breakdown and All Purchases</a><br>
+</body>
+
+</html>

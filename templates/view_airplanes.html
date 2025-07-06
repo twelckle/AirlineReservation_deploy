@@ -1,0 +1,39 @@
+<html>
+<head>
+</head>
+<body>
+
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
+	<a href="staff_home">Go back</a> </br>
+	<h4>{{message}}</h4>
+	<h1>Airplanes operated by your airline</h1>
+	<div>
+	<table>
+		<th>Airline Name</th>
+		<th>Airplane ID</th>
+		<th>Number of Seats</th>
+		<th>Manufacutring Company</th>
+		<th>Manufacutring Date</th>
+		<th>Model Number</th>
+	{% for airplane in airplanes %}
+		<tr>
+			<td>{{airplane['airline_name']}}</td>
+			<td>{{airplane['airplaneID']}}</td>
+			<td>{{airplane['num_of_seats']}}</td>
+			<td>{{airplane['manufacutring_company']}}</td>
+			<td>{{airplane['manufacutring_date']}}</td>
+			<td>{{airplane['model_num']}}</td>
+
+		</tr>
+	{% endfor %}
+	</table>
+
+	</div>
+</body>
+
+
+</html>

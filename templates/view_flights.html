@@ -1,0 +1,65 @@
+<html>
+<head>
+</head>
+<body>
+
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
+	<h3>{{createFlight}}</h3>
+	<a href="staff_home">Go back</a> </br>
+	<h1>View Flights</h1>
+	<div>
+
+	<form action="/viewFlights" method="POST">
+		<h4>Search for flights</h4>
+
+		<input type="text" name = "flight_num" placeholder="Flight Number" />
+		Start Date: <input type="date" name = "start_date" placeholder="Start Date" /> 
+		End Date: <input type="date" name = "end_date" placeholder="End Date" />
+		<input type="text" name = "departure_airport" placeholder="Departure Airport" />
+		<input type="text" name = "arrival_airport" placeholder="Arrival Airport" />
+		<input type="Submit" value = "Search for Flights"/> </br>
+
+	</form>
+	<h3> {{message}} </h3>
+	<table>
+		<th>Airline Name</th>
+		<th>Departure Aiport</th>
+		<th>Arrival Airport</th>
+		<th>Flight Number</th>
+		<th>Departure Date</th>
+		<th>Departure Time</th>
+		<th>Arrival Date</th>
+		<th>Arrival Time</th>
+		<th>Base Price Ticket</th>
+		<th>Total Seats</th>
+		<th>Available Seats</th>
+		<th>Flight Status</th>
+		<th>Reviews</th>
+	{% for flight in outBoundFlights %}
+		<tr>
+			<td>{{flight['airline_name']}}</td>
+			<td>{{flight['departure_airport']}}</td>
+			<td>{{flight['arrival_airport']}}</td>
+			<td><a href="/see_customers?param1={{flight['flight_num']}}&param2={{ flight['airline_name']}}&param3={{flight['departure_date']}}&param4={{ flight['departure_time']}}">{{flight['flight_num']}}</a></td>
+			<td>{{flight['departure_date']}}</td>
+			<td>{{flight['departure_time']}}</td>
+			<td>{{flight['arrival_date']}}</td>
+			<td>{{flight['arrival_time']}}</td>
+			<td>{{flight['base_price_ticket']}}</td>
+			<td>{{flight['total_seats']}}</td>
+			<td>{{flight['available_seats']}}</td>
+			<td><a href="/change_status?param1={{flight['flight_num']}}&param2={{ flight['airline_name']}}&param3={{flight['departure_date']}}&param4={{ flight['departure_time']}}">{{flight['flight_status']}}</a></td>
+			<td><a href="/view_reviews?param1={{flight['flight_num']}}&param2={{ flight['airline_name']}}&param3={{flight['departure_date']}}&param4={{ flight['departure_time']}}">{{flight['review']}}</a></td>
+	
+		</tr>
+	{% endfor %}
+	</table>
+	</div>
+</body>
+
+
+</html>

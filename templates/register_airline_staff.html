@@ -1,0 +1,60 @@
+<html>
+<head>
+</head>
+<body>
+<a href="/">Go back</a>
+<form action="/registerStaff" method="POST">
+	<h1>Register Staff</h1>
+	<input type="text" name = "username" placeholder="username" required/> </br>
+	<input type="password" name = "password" placeholder="password" required/></br>
+	<input type='text' name = "airline_name" placeholder="airline name" required/></br>
+	<input type="text" name = "first_name" placeholder="first name" required/> </br>
+	<input type="text" name = "last_name" placeholder="last name" required/> </br>
+
+	<div id="phoneContainer">
+		<input type='text' name = "staff_phone[]" placeholder="phone number" required> </br>
+	</div>
+	<button type="button" onclick='addPhoneField()'>Add Phone Number</button> </br>
+
+	<div id="emailContainer">
+		<input type="email" name="staff_email[]" placeholder="email" required/> </br>
+	</div>
+	<button type="button" onClick='addEmailField()'> Add Email </button> </br>
+	
+	<label>Date of Birth: </label>
+	<input type="date" name = "date_of_birth" placeholder="date of birth" required/> </br>
+	<input type="submit" value = Register required/>
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<script>
+	function addPhoneField(){
+		var container = document.getElementById("phoneContainer");
+	    var newPhoneInput = document.createElement("input");
+	    newPhoneInput.type = "text";
+	    newPhoneInput.name = "staff_phone[]"; // Use an array to handle multiple email inputs
+	    newPhoneInput.placeholder = "phone number";
+
+	    var lineBreak = document.createElement("br");
+
+	    container.appendChild(newPhoneInput);
+	    container.appendChild(lineBreak);
+	 }
+
+	 function addEmailField(){
+		var container = document.getElementById("emailContainer");
+	    var newPhoneInput = document.createElement("input");
+	    newPhoneInput.type = "email";
+	    newPhoneInput.name = "staff_email[]"; // Use an array to handle multiple email inputs
+	    newPhoneInput.placeholder = "email";
+
+	    var lineBreak = document.createElement("br");
+
+	    container.appendChild(newPhoneInput);
+	    container.appendChild(lineBreak);
+	}
+</script>
+</body>
+</html>

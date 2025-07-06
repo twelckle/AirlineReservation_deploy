@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style type="text/css">
+        table, th, td {
+            border: 0.5px solid black;
+        }
+    </style>
+</head>
+
+<body>
+	<a href="/customerHome">Back</a>
+
+    <!-- Default: Total amount last year -->
+    <p>
+        <strong>
+            Total Amount Spent in the past 1 year: ${{ total_spent_past_year }}
+        </strong>
+    </p>
+    <p>
+        By default, you're shown the monthly spending results for the past 6 months. Choose a date range to filter the results.
+    </p>
+
+    <form action="{{ url_for('customer_spending') }}" method="post">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required>
+        <input type="submit" value="Filter">
+    </form>
+
+    <!-- If a date range is specified -->
+    {% if date_range_spending_amount %}
+    <h2>Spending Between {{ start_date }} and {{ end_date }}</h2>
+    <p>Total amount spent in the given date range: ${{ date_range_spending_amount['total_amount'] }}</p>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Total Amount</th>
+        </tr>
+        {% for spending in date_range_monthly_spending_data %}
+        <tr>
+            <td>{{ spending['month'] }}</td>
+            <td>{{ spending['year'] }}</td>
+            <td>${{ spending['total_amount'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <!-- If a date range is not specified -->
+    {% if not date_range_spending_amount %}
+    <h2>Monthly Spending in the Last 6 Months</h2>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Total Amount</th>
+        </tr>
+        {% for spending in monthly_spending_data %}
+        <tr>
+            <td>{{ spending['month'] }}</td>
+            <td>{{ spending['year'] }}</td>
+            <td>${{ spending['total_amount'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+			
+</body>
+
+</html>

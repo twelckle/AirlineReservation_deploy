@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Results</title>
+    <style type="text/css">
+        table, th, td {
+            border: 0.5px solid black;
+        }
+    </style>
+    <!-- <link rel="stylesheet" href="/static/style.css"> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('flight-selection-form').addEventListener('change', function() {
+                var outboundSelection = document.querySelector('input[name="selected_outbound"]:checked');
+                var inboundSelection = document.querySelector('input[name="selected_inbound"]:checked');
+        
+                var totalCost = 0;
+                var outboundCost = 0;
+                var inboundCost = 0;
+                
+                // Keep track of outbound and inbound costs separately, along with the total cost
+                if (outboundSelection) {
+                    outboundCost = parseFloat(outboundSelection.getAttribute('data-price'));
+                    totalCost += outboundCost;
+                }
+                if (inboundSelection) {
+                    inboundCost = parseFloat(inboundSelection.getAttribute('data-price'));
+                    totalCost += inboundCost;
+                }
+        
+                document.getElementById('total-cost').textContent = 'Total Cost: $' + totalCost.toFixed(2);
+                document.getElementById('total_cost_hidden').value = totalCost.toFixed(2);
+                document.getElementById('outbound_cost_hidden').value = outboundCost.toFixed(2);
+                document.getElementById('inbound_cost_hidden').value = inboundCost.toFixed(2);
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- <a href="/search">Back</a> -->
+    <!-- Using JavaScript to retreive information from the browser history -->
+    <!-- Navigate to the last page user came from -->
+    <a href="#" onclick="history.back();return false;">Back</a>
+
+    <h1>Flight Results</h1>
+    <!-- <br> -->
+
+    <form id="flight-selection-form" action="/customer-purchase" method="post">
+
+        <h2>Outbound flights</h2>
+        <table>
+            <tr>
+                <th>Airline</th>
+                <th>Flight Number</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure Date</th>
+                <th>Departure Time</th>
+                <th>Arrival Date</th>
+                <th>Arrival Time</th>
+                <!-- <th>Price</th> -->
+                <th>Price</th>
+                <th>Select</th>
+
+            </tr>
+            {% for flight in outbound_flights %}
+            <tr>
+                <td>{{ flight['airline_name'] }}</td>
+                <td>{{ flight['flight_num'] }}</td>
+                <td>{{ flight['departure_airport'] }}</td>
+                <td>{{ flight['arrival_airport'] }}</td>
+                <td>{{ flight['departure_date'] }}</td>
+                <td>{{ flight['departure_time'] }}</td>
+                <td>{{ flight['arrival_date'] }}</td>
+                <td>{{ flight['arrival_time'] }}</td>
+                <!-- <td>{{ flight['base_price_ticket'] }}</td> -->
+                <td>{{ flight['dynamic_price'] }}</td>
+                <td><input type="radio" name="selected_outbound" value="{{ flight['flight_num'] }}_{{ flight['airline_name'] }}_{{ flight['departure_date'] }}_{{ flight['departure_time'] }}" data-price = "{{ flight['dynamic_price'] }}"></td> <!-- Concatenation of strings since it's a weak entity and there are 4 primary keys -->
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <!-- <hr> -->
+
+        {% if inbound_flights %} <!-- Check if there are inbound flights to display -->
+        <h2>Inbound flights</h2>
+        <table>
+            <tr>
+                <th>Airline</th>
+                <th>Flight Number</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure Date</th>
+                <th>Departure Time</th>
+                <th>Arrival Date</th>
+                <th>Arrival Time</th>
+                <!-- <th>Price</th> -->
+                <th>Price</th>
+                <th>Select</th>
+            </tr>
+            {% for flight in inbound_flights %}
+            <tr>
+                <td>{{ flight['airline_name'] }}</td>
+                <td>{{ flight['flight_num'] }}</td>
+                <td>{{ flight['departure_airport'] }}</td>
+                <td>{{ flight['arrival_airport'] }}</td>
+                <td>{{ flight['departure_date'] }}</td>
+                <td>{{ flight['departure_time'] }}</td>
+                <td>{{ flight['arrival_date'] }}</td>
+                <td>{{ flight['arrival_time'] }}</td>
+                <!-- <td>{{ flight['base_price_ticket'] }}</td> -->
+                <td>{{ flight['dynamic_price'] }}</td>
+                <td><input type="radio" name="selected_inbound" value="{{ flight['flight_num'] }}_{{ flight['airline_name'] }}_{{ flight['departure_date'] }}_{{ flight['departure_time'] }}" data-price = "{{ flight['dynamic_price'] }}"></td> <!-- Concatenation of strings since it's a weak entity and there are 4 primary keys -->
+            </tr>
+            {% endfor %}
+        </table>
+        <br> 
+        {% endif %}
+        <br>
+        <!-- A total view and submit button to submit the selected flights - next page -->
+        <div>
+            <span id="total-cost">Total Cost: $0</span>
+            <!-- Added hidden fields to keep track of the values of the costs -->
+            <input type="hidden" id="total_cost_hidden" name="total_cost" value="0">
+            <input type="hidden" id="outbound_cost_hidden" name="outbound_cost" value="0">
+            <input type="hidden" id="inbound_cost_hidden" name="inbound_cost" value="0">
+            
+            <input type="submit" value="Confim Selection">
+        </div>
+    </form>
+
+    <!-- 
+    Flask Code for using concatenated strings
+    @app.route('/purchase', methods=['POST'])
+    def purchase_flight():
+    selected_outbound = request.form['selected_outbound']
+    flight_num, airline_name, departure_date, departure_time = selected_outbound.split('_')
+    
+    # Now you can use flight_num, airline_name, departure_date, and departure_time
+    # to identify the flight in the database and proceed with the purchase process
+    
+    # ... rest of your code to handle the purchase ...
+    
+    return redirect(url_for('confirmation_page'))  # Redirect to a confirmation page or another appropriate route
+
+     -->
+</body>
+</html>
