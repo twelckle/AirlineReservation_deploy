@@ -813,13 +813,13 @@ def registerStaff():
 	username = request.form['username']
 	cursor = conn.cursor()
 	query = 'SELECT * FROM airline_staff WHERE username = %s'
-	cursor.execute(query, (username))
+	cursor.execute(query, (username,))
 	usernameExists = cursor.fetchone()
 	
 	#get query to see whether airline exists
 	airline_name = request.form['airline_name']
 	airline_query = 'SELECT * FROM airline where airline_name = %s'
-	cursor.execute(airline_query, (airline_name))
+	cursor.execute(airline_query, (airline_name,))
 	airlineExists = cursor.fetchone()
 
 	error = None
