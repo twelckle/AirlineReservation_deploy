@@ -109,7 +109,7 @@ def registerAuth():
 
     # Check if email already exists
     query = 'SELECT * FROM customer WHERE email_id = %s'
-    cursor.execute(query, (customer_email))
+    cursor.execute(query, (customer_email,))
     emailExists = cursor.fetchone()
 
     if (emailExists): 
@@ -356,7 +356,7 @@ def generate_ticket_id(cursor):
     while True:
         # Generate a random ticket ID
         ticket_id = random.randint(1, max_int)
-        cursor.execute('SELECT ticketID FROM ticket WHERE ticketID = %s', (ticket_id))
+        cursor.execute('SELECT ticketID FROM ticket WHERE ticketID = %s', (ticket_id,))
         result = cursor.fetchone()
         if result is None:
             return ticket_id
@@ -540,12 +540,12 @@ def customer_all_purchases():
             WHERE t.ticketID = p.ticketID AND p.email_id = %s
             ORDER BY purchase_date DESC, purchase_time DESC;
             '''
-    cursor.execute(spending_history_query, (customer_email))
+    cursor.execute(spending_history_query, (customer_email,))
     spending_history_data = cursor.fetchall()
 
     # Query to get the total amount spent by the customer in session
     total_spent_query = 'SELECT SUM(amount_paid) AS total_amount FROM `purchase` WHERE email_id = %s'
-    cursor.execute(total_spent_query, (customer_email))
+    cursor.execute(total_spent_query, (customer_email,))
     total_spent_amount = cursor.fetchone()
 
     cursor.close()
@@ -581,7 +581,7 @@ def customer_spending():
         GROUP BY month, year 
         ORDER BY year, month DESC;
     '''
-    cursor.execute(monthly_spending_query, (customer_email))
+    cursor.execute(monthly_spending_query, (customer_email,))
     monthly_spending_data = cursor.fetchall()
 
     # Initialize variables for date range
@@ -659,7 +659,7 @@ def customer_rate_flight():
             SELECT 1 FROM review r WHERE r.ticketID = p.ticketID
         )
     '''
-    cursor.execute(query, (customer_email))
+    cursor.execute(query, (customer_email,))
     flights_to_rate = cursor.fetchall()
     cursor.close()
 
@@ -723,7 +723,7 @@ def customer_view_flights():
         AND f.departure_date < CURRENT_DATE()
         ORDER BY departure_date DESC, departure_time DESC
     '''
-    cursor.execute(previous_flights_query, (customer_email))
+    cursor.execute(previous_flights_query, (customer_email,))
     previous_flights = cursor.fetchall()
 
     cursor.close()
@@ -771,11 +771,11 @@ def customer_cancel_flight():
             SET f.available_seats = f.available_seats + 1
             WHERE t.ticketID = %s;
             '''
-            cursor.execute(update_seats_query, (ticket_id_to_cancel))
+            cursor.execute(update_seats_query, (ticket_id_to_cancel,))
             
             # Delete the data from purchase and ticket table in the same order
             cursor.execute('DELETE FROM purchase WHERE ticketID = %s AND email_id = %s', (ticket_id_to_cancel, customer_email))
-            cursor.execute('DELETE FROM ticket WHERE ticketID = %s', (ticket_id_to_cancel))
+            cursor.execute('DELETE FROM ticket WHERE ticketID = %s', (ticket_id_to_cancel,))
             conn.commit()
 
         except Exception as e:
@@ -950,7 +950,7 @@ def view_flights():
 
 	cursor = conn.cursor()
 	thirty_day_query = 'SELECT * FROM flight WHERE airline_name = %s and CURRENT_DATE <= departure_date and departure_date <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) ORDER BY departure_date DESC'
-	cursor.execute(thirty_day_query, (session['airline']))
+	cursor.execute(thirty_day_query, (session['airline'],))
 	thirty_day_flights = cursor.fetchall()
 	cursor.close()
 	message = "Flights in next 30 days"
@@ -1102,13 +1102,13 @@ def createNewFlight():
 	#get query to see whether arrival airport exists
 	arrival_airport = request.form['arrival_airport']
 	arrival_aiport_query = 'SELECT * FROM airport where code = %s'
-	cursor.execute(arrival_aiport_query, (arrival_airport))
+	cursor.execute(arrival_aiport_query, (arrival_airport,))
 	arrivalAirportExists = cursor.fetchone()
 
 	#get query to see whether departure airport exists
 	departure_airport = request.form['departure_airport']
 	departure_aiport_query = 'SELECT * FROM airport where code = %s'
-	cursor.execute(departure_aiport_query, (departure_airport))
+	cursor.execute(departure_aiport_query, (departure_airport,))
 	departureAirportExists = cursor.fetchone()
 
 	#get query to see whether Airplane exists
@@ -1183,7 +1183,7 @@ def createNewFlight():
 		conn.commit()
 		
 		thirty_day_query = 'SELECT * FROM flight WHERE airline_name = %s and CURRENT_DATE <= departure_date and departure_date <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) ORDER BY departure_date DESC'
-		cursor.execute(thirty_day_query, (session['airline']))
+		cursor.execute(thirty_day_query, (session['airline'],))
 		thirty_day_flights = cursor.fetchall()
 		cursor.close()
 		cursor.close()
@@ -1232,7 +1232,7 @@ def view_airplanes():
 		return redirect(url_for('login_airline_staff'))
 	cursor = conn.cursor()
 	airplanes_query = 'SELECT * FROM airplane where airline_name = %s'
-	cursor.execute(airplanes_query, (session['airline']))
+	cursor.execute(airplanes_query, (session['airline'],))
 	airplanes = cursor.fetchall();
 	cursor.close()
 
@@ -1255,7 +1255,7 @@ def createNewAirport():
 	cursor = conn.cursor()
 	airport_code = request.form['code']
 	airport_exists_query = 'SELECT * FROM airport where code = %s'
-	cursor.execute(airport_exists_query, (airport_code))
+	cursor.execute(airport_exists_query, (airport_code,))
 	airportExists = cursor.fetchone()
 
 	if(airportExists is not None):
@@ -1408,7 +1408,7 @@ def view_frequent_customers():
 	
 	cursor = conn.cursor()
 	most_frequent_query = 'SELECT email_id, first_name, last_name, date_of_birth, count(*) as frequency from purchase natural join customer natural join ticket where airline_name = %s group by email_id order by frequency desc'
-	cursor.execute(most_frequent_query, (session['airline']))
+	cursor.execute(most_frequent_query, (session['airline'],))
 	customers = cursor.fetchall()
 	cursor.close()
 	return render_template('view_frequent_customers.html', customers = customers)
@@ -1421,7 +1421,7 @@ def view_cusomter_flights():
 	cursor = conn.cursor()
 	user_email_id = request.args.get('param1')
 	customer_query = 'SELECT * from customer where email_id = %s'
-	cursor.execute(customer_query, (user_email_id))
+	cursor.execute(customer_query, (user_email_id,))
 	customer = cursor.fetchone()
 
 	flights_query = 'SELECT airline_name, departure_airport, arrival_airport, assigned_airplane_airline, assigned_airplaneID, flight_num, departure_date, departure_time, arrival_date, arrival_time, base_price_ticket, flight_status, total_seats, available_seats from (customer, purchase) natural join ticket natural join flight where customer.email_id = purchase.email_id and customer.email_id = %s and airline_name = %s'
@@ -1451,11 +1451,11 @@ def view_earned_revenue():
 
 	cursor = conn.cursor();
 	monthly_query = 'SELECT sum(amount_paid) as month_amt from purchase natural join ticket where airline_name = %s and purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)'
-	cursor.execute(monthly_query, (session['airline']))
+	cursor.execute(monthly_query, (session['airline'],))
 	monthly_amount = cursor.fetchone()
 
 	yearly_query = 'SELECT sum(amount_paid) as year_amt from purchase natural join ticket where airline_name = %s and purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)'
-	cursor.execute(yearly_query, (session['airline']))
+	cursor.execute(yearly_query, (session['airline'],))
 	yearly_amount = cursor.fetchone()
 	cursor.close()
 
