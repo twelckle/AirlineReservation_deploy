@@ -139,7 +139,7 @@ create table purchase
 	 first_name				varchar(100),
 	 last_name				varchar(100),
 	 date_of_birth			date,
-	 card_type				varchar(6) check (card_type in("debit", "credit")),
+	 card_type				varchar(6) check (card_type in('debit', 'credit')),
 	 card_num				bigint,
 	 name_on_card			varchar(100),
 	 expiration_date		date,

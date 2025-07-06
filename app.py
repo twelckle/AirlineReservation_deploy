@@ -7,6 +7,7 @@ import random
 from datetime import datetime
 import os
 import psycopg2
+import psycopg2.extras
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -49,7 +50,7 @@ def search_flights():
 
 
         # SQL Query the database
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             # Query for fetching all the details from flight table
             # cursor.execute(
             #     'SELECT * FROM flight WHERE departure_airport = %s AND arrival_airport = %s AND departure_date = %s',
@@ -97,7 +98,7 @@ def search_flights():
 @app.route('/registerAuth', methods=['GET', 'POST'])
 def registerAuth():
     customer_email = request.form['emailid']
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Check if email already exists
     query = 'SELECT * FROM customer WHERE email_id = %s'
@@ -159,7 +160,7 @@ def LoginAuth():
     password = hashlib.md5(request.form['password'].encode()).hexdigest()
         
     #queries database to see if such tuple exists
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     query = 'SELECT * FROM customer WHERE email_id = %s and pwd = %s'
     cursor.execute(query, (email, password))
     data = cursor.fetchone()
@@ -184,7 +185,7 @@ def LoginAuth():
             ######
             # Since I want the flight details in a table, I need to execute those queries again here.
             # Copy Pasted from the customer-purchase function
-            cursor = conn.cursor()
+            cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             details_selected_outbound = None
             details_selected_inbound = None # This is to ensure a successful build and run, since inbound is not always present
             
@@ -236,7 +237,7 @@ def isNotValidCustomer():
 	if(session['password'] is None): return True
 	email = session['email']
 	password = session['password']
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	query = 'SELECT * FROM customer WHERE email_id = %s and pwd = %s'
 	cursor.execute(query, (email, password))
 	data = cursor.fetchone()
@@ -294,7 +295,7 @@ def purchase():
             selected_inbound = request.form.get('selected_inbound') or session.get('selected_inbound')
             total_cost = request.form.get('total_cost') or session.get('total_cost')
 
-            cursor = conn.cursor()
+            cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             details_selected_outbound = None
             details_selected_inbound = None # This is to ensure a successful build and run, since inbound is not always present
             
@@ -394,7 +395,7 @@ def purchase_confirmation():
     expiration_date = request.form['expiration_date']
 
     # Generate a unique ticketID
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     outboundTicketID = generate_ticket_id(cursor)
     inboundTicketID = generate_ticket_id(cursor) if selected_inbound else None
 
@@ -522,7 +523,7 @@ def customer_all_purchases():
         return redirect(url_for('customer_login'))
     
     customer_email = session['email'] # To load the customer data accordingly
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Query to get the Purchase History and connected Ticket data
     spending_history_query = '''
@@ -552,7 +553,7 @@ def customer_spending():
         return redirect(url_for('customer_login'))
     
     customer_email = session['email'] # To load the customer data accordingly
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Query to get the total amount spent by the customer in the last 1 year
     total_spent_past_year_query = '''
@@ -625,7 +626,7 @@ def customer_rate_flight():
         return redirect(url_for('customer_login'))
     
     customer_email = session.get('email')  # Retrieve the logged-in user's email from the session
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Fetch flights that have not been rated by the user yet: Display details from flight and purchase, and check the review table for existing entries
     query = '''
@@ -665,7 +666,7 @@ def customer_submit_rating():
     comment = request.form.get('comment')
     customer_email = session.get('email')
 
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	# Insert the data from the form into the review table
     query = 'INSERT INTO review (ticketID, email_id, rate, comment) VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (ticketID, customer_email, rate, comment))
@@ -681,7 +682,7 @@ def customer_view_flights():
         return redirect(url_for('customer_login'))
 
     customer_email = session.get('email')  # Retrieve the logged-in user's email from the session
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Fetch upcoming flights
     upcoming_flights_query = '''
@@ -732,7 +733,7 @@ def customer_cancel_flight():
     ticket_id_to_cancel = request.form.get('cancel_ticket_id')
     customer_email = session['email']
 
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     # Check if the flight is more than 24 hours away
     # (Double checking in the back-end too. Already blocked in the front-end)
@@ -803,7 +804,7 @@ def registerStaff():
 
 	#get query to see whether username already exists
 	username = request.form['username']
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	query = 'SELECT * FROM airline_staff WHERE username = %s'
 	cursor.execute(query, (username))
 	usernameExists = cursor.fetchone()
@@ -885,7 +886,7 @@ def loginStaff():
 	password = hashlib.md5(request.form['password'].encode()).hexdigest()
 
 	#queries database to see if such tuple exists
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	query = 'SELECT * FROM airline_staff WHERE username = %s and pwd = %s'
 	cursor.execute(query, (username, password))
 	data = cursor.fetchone()
@@ -915,7 +916,7 @@ def isNotValidStaff():
 	if(session['password'] is None): return True
 	username = session['username']
 	password = session['password']
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	query = 'SELECT * FROM airline_staff WHERE username = %s and pwd = %s'
 	cursor.execute(query, (username, password))
 	data = cursor.fetchone()
@@ -940,7 +941,7 @@ def view_flights():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	thirty_day_query = 'SELECT * FROM flight WHERE airline_name = %s and CURRENT_DATE <= departure_date and departure_date <= DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY) ORDER BY departure_date DESC'
 	cursor.execute(thirty_day_query, (session['airline']))
 	thirty_day_flights = cursor.fetchall()
@@ -953,7 +954,7 @@ def viewFlights():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	flight_num = request.form.get('flight_num')
 	start_date = request.form.get('start_date')
 	end_date = request.form.get('end_date')
@@ -1015,7 +1016,7 @@ def change_status():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	flight_query = 'SELECT * FROM flight WHERE airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s'
 	cursor.execute(flight_query, (request.args.get('param2'), request.args.get('param1'), request.args.get('param3'), request.args.get('param4')))
 	flight = cursor.fetchone()
@@ -1031,7 +1032,7 @@ def changeStatus():
 		return redirect(url_for('login_airline_staff'))
 
 	selected_status = request.form['status']
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 	flight_change_query = 'UPDATE flight set flight_status = %s where airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s'
 	flight_query = 'SELECT * FROM flight WHERE airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s'
@@ -1059,7 +1060,7 @@ def see_customers():
 	departure_date = request.args.get('param3')
 	departure_time = request.args.get('param4')
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	flight_query = 'SELECT * FROM flight WHERE airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s'
 	cursor.execute(flight_query, (airline_name, flight_num, departure_date, departure_time))
 	flight = cursor.fetchone()
@@ -1083,7 +1084,7 @@ def createNewFlight():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor();
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor);
 	flight_num = request.form['flight_num']
 	departure_date = request.form['departure_date']
 	departure_time = request.form['departure_time']
@@ -1195,7 +1196,7 @@ def createNewAirplane():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	airplane_ID = request.form['airplaneID']
 
 	airplane_exists_query = 'SELECT * from airplane where airplaneID = %s and airline_name = %s'
@@ -1222,7 +1223,7 @@ def createNewAirplane():
 def view_airplanes():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	airplanes_query = 'SELECT * FROM airplane where airline_name = %s'
 	cursor.execute(airplanes_query, (session['airline']))
 	airplanes = cursor.fetchall();
@@ -1244,7 +1245,7 @@ def createNewAirport():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	airport_code = request.form['code']
 	airport_exists_query = 'SELECT * FROM airport where code = %s'
 	cursor.execute(airport_exists_query, (airport_code))
@@ -1280,7 +1281,7 @@ def searchFlightRatings():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	airline_name = request.form['airline_name']
 	flight_num = request.form['flight_num']
 	departure_date = request.form['departure_date']
@@ -1311,7 +1312,7 @@ def printFlightRatings(flight):
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	reviews_query = 'SELECT * FROM review where ticketID in (SELECT ticketID FROM ticket WHERE airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s)'
 	review_avg_query = 'SELECT avg(rate) as avgRate FROM review where ticketID in (SELECT ticketID FROM ticket WHERE airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s)'
 	cursor.execute(reviews_query, (flight['airline_name'], flight['flight_num'], flight['departure_date'], flight['departure_time']))
@@ -1328,7 +1329,7 @@ def view_reviews():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	flight_query = 'SELECT * FROM flight WHERE airline_name = %s and flight_num = %s and departure_date = %s and departure_time = %s'
 	cursor.execute(flight_query, (request.args.get('param2'), request.args.get('param1'), request.args.get('param3'), request.args.get('param4')))
 	flight = cursor.fetchone()
@@ -1349,7 +1350,7 @@ def scheduleMaintenance():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	airlineName = request.form['airline_name']
 	airplaneID = request.form['airplane_ID']
 	airplane_query = 'SELECT * FROM airplane WHERE airline_name = %s and airplaneID = %s'
@@ -1398,7 +1399,7 @@ def view_frequent_customers():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 	
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	most_frequent_query = 'SELECT email_id, first_name, last_name, date_of_birth, count(*) as frequency from purchase natural join customer natural join ticket where airline_name = %s group by email_id order by frequency desc'
 	cursor.execute(most_frequent_query, (session['airline']))
 	customers = cursor.fetchall()
@@ -1410,7 +1411,7 @@ def view_cusomter_flights():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor()
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 	user_email_id = request.args.get('param1')
 	customer_query = 'SELECT * from customer where email_id = %s'
 	cursor.execute(customer_query, (user_email_id))
@@ -1441,7 +1442,7 @@ def view_earned_revenue():
 	if(isNotValidStaff()):
 		return redirect(url_for('login_airline_staff'))
 
-	cursor = conn.cursor();
+	cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor);
 	monthly_query = 'SELECT sum(amount_paid) as month_amt from purchase natural join ticket where airline_name = %s and purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)'
 	cursor.execute(monthly_query, (session['airline']))
 	monthly_amount = cursor.fetchone()
@@ -1460,7 +1461,7 @@ def check_flight_status():
 @app.route('/checkFlightStatus', methods=['GET', 'POST'])
 def checkFlightStatus():
 
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     airline = request.form['airline_name']
     flight_num = request.form['flight_num']
     departure_date = request.form['departure']
